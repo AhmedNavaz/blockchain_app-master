@@ -1,3 +1,4 @@
+import 'package:blockchain_app/controller/auth_controller.dart';
 import 'package:blockchain_app/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   final _formKey = GlobalKey<FormState>();
 
   final userController = Get.put(UserController());
+  final authController = Get.put(AuthController());
+
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController repeatPasswordController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   bool currentPasswordValid = true;
 
@@ -51,7 +57,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: TextFormField(
-                        controller: userController.passwordController,
+                        controller: passwordController,
                         enableSuggestions: false,
                         autocorrect: false,
                         obscureText: true,
@@ -82,16 +88,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: passwordFields('New Password', (value) {},
-                          userController.newPasswordController),
+                          newPasswordController),
                     ),
                     Container(
                       padding: const EdgeInsets.all(20),
                       child: passwordFields('Repeat Password', (value) {
-                        return userController.newPasswordController.text ==
+                        return newPasswordController.text ==
                                 value
                             ? null
                             : 'Passwords must match';
-                      }, userController.repeatPasswordController),
+                      }, repeatPasswordController),
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 30, bottom: 200),
@@ -114,14 +120,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                         ))),
                         onPressed: () async {
                           currentPasswordValid =
-                              await userController.validateCurrentPassword(
-                                  userController.passwordController.text);
+                              await authController.validateCurrentPassword(
+                                  passwordController.text);
 
                           setState(() {});
                           if (_formKey.currentState!.validate() &&
                               currentPasswordValid) {
-                            userController.updateUserPassword(
-                                userController.newPasswordController.text);
+                            authController.updateUserPassword(
+                                newPasswordController.text);
                             Get.back();
                           }
                         },

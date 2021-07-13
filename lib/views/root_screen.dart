@@ -1,7 +1,9 @@
+import 'package:blockchain_app/controller/auth_controller.dart';
 import 'package:blockchain_app/pages/deposit_page.dart';
 import 'package:blockchain_app/pages/portfolio_page.dart';
 import 'package:blockchain_app/pages/transaction_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // ignore: must_be_immutable
 class RootScreen extends StatefulWidget {
@@ -13,15 +15,19 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
-
+  final authController = Get.find<AuthController>();
   // LOAD USER DATA FROM DATABASE WITH ITS UID
   // THIS WILL BE PLACED IN INIT STATE
-  void refreshUser(){}
+  void refreshUser(){
+    authController.getUser(authController.currentUser.value!.uid).then((response) {
+      print(response.body);
+    });
+  }
 
   @override
   void initState() {
-
     super.initState();
+    refreshUser();
   }
 
   int _selectedPage = 1;

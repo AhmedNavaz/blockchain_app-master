@@ -1,9 +1,17 @@
-import 'package:blockchain_app/controller/database.dart';
+import 'dart:convert';
+
+import 'package:blockchain_app/controller/user_controller.dart';
+import 'package:blockchain_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
+  final userController = Get.put(UserController());
+  static const String BASE_URL = "https://simpyswap.net/";
+
   var profile_verified = true.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,8 +29,7 @@ class AuthController extends GetxController {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);
 
-      await DatabaseService(uid: authResult.user!.uid).addUserData('Simpy',
-          'Swap', '74 Monroe Avenue', 'Fort Myers', '33901', 'United States');
+      createUserInDatabase(authResult.user!.uid, authResult.user!.email!).then((value) => debugPrint(value.statusCode.toString()));
 
       return authResult.user!.uid;
     } catch (e) {
@@ -53,20 +60,17 @@ class AuthController extends GetxController {
         if ('' == value.user!.uid || value.user!.uid == null) {
           return "Error Authenticating";
         } else {
+          // CHECK IF USER EXISTS
+          // IF ! EXiSTS CREATE A USER IN DATABASE
+          getUser(value.user!.uid).then((res){
+            if(res.statusCode == 404){
+              createUserInDatabase(value.user!.uid, value.user!.email!).then((value) => debugPrint(value.statusCode.toString()));
+            }
+          });
+
           return '';
         }
       });
-      // Future.delayed(const Duration(milliseconds: 1000), () async{
-      //   bool isNew = await Database().isNewUser(_auth.currentUser);
-      //   UserModel _user = UserModel(id: _auth.currentUser!.uid, name: _auth.currentUser!.displayName, email: _auth.currentUser!.email, imageUrl: _auth.currentUser!.photoURL, createdAt: Timestamp.now(), bio: "Your Bio");
-      //   if(isNew){
-      //     if(await Database().createUserInDatabase(_user)){
-      //       Get.put(UserController()).currentUser.value = _user;
-      //     }else{
-      //       Get.put(UserController()).currentUser.value = _user;
-      //     }
-      //   }
-      // });
     } catch (e) {
       Get.snackbar("Error login Account", e.toString(),
           snackPosition: SnackPosition.BOTTOM);
@@ -94,6 +98,7 @@ class AuthController extends GetxController {
     try {
       await googleSignIn.signOut();
       await _auth.signOut();
+      userController.loggedInUser.value.uid = null;
     } catch (e) {
       Get.snackbar("Error Signing Out", e.toString(),
           snackPosition: SnackPosition.BOTTOM);
@@ -101,7 +106,74 @@ class AuthController extends GetxController {
   }
 
   Future<void> updatePassword(String password) async {
-    var firebaseUser = await FirebaseAuth.instance.currentUser;
+    var firebaseUser = await _auth.currentUser;
     firebaseUser!.updatePassword(password);
   }
+
+  Future<bool> validateCurrentPassword(String password) async {
+    return await validatePassword(password);
+  }
+
+  void updateUserPassword(String password) {
+    updatePassword(password);
+  }
+
+
+
+  // HTTP REQUESTS TO HOSTINGER SERVER
+
+  Future<http.Response> createUserInDatabase(String uid, String email) async {
+    var url = Uri.parse(BASE_URL + 'auth/user-info');
+    try {
+      http.Response response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({
+            'email': email,
+            'uid': uid,
+          }));
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<http.Response> addPersonalInfo(String firstName, String lastName, String streetAddress, String city, String zip, String citizenship, String uid) async {
+    var url = Uri.parse(BASE_URL + 'auth/personal-info/$uid');
+    try {
+      http.Response response = await http.post(url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({
+            "firstName": firstName,
+            "lastName" : lastName,
+            "streetAddress" : streetAddress,
+            "city" : city,
+            "zip" : zip,
+            "citizenship" : citizenship
+          }));
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<http.Response> getUser(String uid) async {
+    var url = Uri.parse(BASE_URL + 'auth/get-user/$uid');
+    try {
+      http.Response response = await http.get(url);
+      if(jsonDecode(response.body)['data'] != 'No data found'){
+        userController.loggedInUser.value = UserModel.fromJson(jsonDecode(response.body)['data']);
+      }
+      return response;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
 }

@@ -1,14 +1,26 @@
-import 'package:blockchain_app/controller/database.dart';
+import 'package:blockchain_app/controller/auth_controller.dart';
 import 'package:blockchain_app/controller/user_controller.dart';
 import 'package:blockchain_app/widgets/custom_textfiled_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PersonalInformationPage extends StatelessWidget {
   PersonalInformationPage({Key? key}) : super(key: key);
   final userController = Get.put(UserController());
+  final authController = Get.find<AuthController>();
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController streetController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController zipController = TextEditingController();
+  TextEditingController citizenshipController = TextEditingController();
+
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController repeatPasswordController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,42 +58,42 @@ class PersonalInformationPage extends StatelessWidget {
                         child: CustomTextfieldWidget(
                           label: 'First Name',
                           placeholder: 'Simpy',
-                          controller: userController.firstNameController,
+                          controller: firstNameController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
                         child: CustomTextfieldWidget(
                           label: 'Last Name',
                           placeholder: 'Swap',
-                          controller: userController.lastNameController,
+                          controller: lastNameController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
                         child: CustomTextfieldWidget(
                           label: 'Street Address',
                           placeholder: '74 Monroe Avenue',
-                          controller: userController.streetController,
+                          controller:streetController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
                         child: CustomTextfieldWidget(
                           label: 'City',
                           placeholder: 'Fort Myers',
-                          controller: userController.cityController,
+                          controller: cityController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
                         child: CustomTextfieldWidget(
                           label: 'Zip/Area code',
                           placeholder: '33901',
-                          controller: userController.zipController,
+                          controller: zipController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
                         child: CustomTextfieldWidget(
                           label: 'Citizenship',
                           placeholder: 'United States',
-                          controller: userController.citizenshipController,
+                          controller: citizenshipController,
                         )),
                     Container(
                       child: ElevatedButton(
@@ -91,16 +103,17 @@ class PersonalInformationPage extends StatelessWidget {
                               content: Text('Successfully Updated'),
                               backgroundColor: Colors.green,
                             ));
-                            await DatabaseService(
-                                    uid: FirebaseAuth.instance.currentUser!.uid)
-                                .addUserData(
-                                    userController.firstNameController.text,
-                                    userController.lastNameController.text,
-                                    userController.streetController.text,
-                                    userController.cityController.text,
-                                    userController.zipController.text,
-                                    userController.citizenshipController.text)
-                                .then((value) => Get.back());
+                                authController.addPersonalInfo(
+                                    firstNameController.text,
+                                    lastNameController.text,
+                                    streetController.text,
+                                    cityController.text,
+                                    zipController.text,
+                                    citizenshipController.text, userController.loggedInUser.value.uid!).then((res) {
+                                      if(res.statusCode == 200){
+                                        Get.back();
+                                      }
+                                });
                           }
                         },
                         child: Text('Submit'),
