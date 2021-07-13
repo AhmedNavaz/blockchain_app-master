@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "775459002509",
+    "project_id": "simpy-swap",
+    "storage_bucket": "simpy-swap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775459002509:android:9fb8f3c29e17781873aac4",
+        "android_client_info": {
+          "package_name": "com.example.blockchain_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "775459002509-36hpb0eu7f050etrmacep2mou6tvicij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blockchain_app",
+            "certificate_hash": "e43bb9337d27cc433eb306ea4dc8bcc86df38549"
+          }
+        },
+        {
+          "client_id": "775459002509-i0u6oolo4nvrm9fbcovna4jtt28fgn43.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB15WZPzVlvSHOI88baObJGPTcFgC5OGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775459002509-i0u6oolo4nvrm9fbcovna4jtt28fgn43.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
