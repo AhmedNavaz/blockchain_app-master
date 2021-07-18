@@ -4,6 +4,7 @@ import 'package:blockchain_app/widgets/custom_textfiled_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ignore: must_be_immutable
 class PersonalInformationPage extends StatelessWidget {
   PersonalInformationPage({Key? key}) : super(key: key);
   final userController = Get.put(UserController());
@@ -72,7 +73,7 @@ class PersonalInformationPage extends StatelessWidget {
                         child: CustomTextfieldWidget(
                           label: 'Street Address',
                           placeholder: '74 Monroe Avenue',
-                          controller:streetController,
+                          controller: streetController,
                         )),
                     Container(
                         padding: const EdgeInsets.all(20),
@@ -103,17 +104,20 @@ class PersonalInformationPage extends StatelessWidget {
                               content: Text('Successfully Updated'),
                               backgroundColor: Colors.green,
                             ));
-                                authController.addPersonalInfo(
+                            authController
+                                .addPersonalInfo(
                                     firstNameController.text,
                                     lastNameController.text,
                                     streetController.text,
                                     cityController.text,
                                     zipController.text,
-                                    citizenshipController.text, userController.loggedInUser.value.uid!).then((res) {
-                                      if(res.statusCode == 200){
-                                        Get.back();
-                                      }
-                                });
+                                    citizenshipController.text,
+                                    userController.loggedInUser.value.uid!)
+                                .then((res) {
+                              if (res.statusCode == 200) {
+                                Get.back();
+                              }
+                            });
                           }
                         },
                         child: Text('Submit'),
