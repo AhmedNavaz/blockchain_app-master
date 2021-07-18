@@ -1,4 +1,3 @@
-import 'package:blockchain_app/controller/auth_controller.dart';
 import 'package:blockchain_app/models/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,7 @@ class UserController extends GetxController {
   var currencyName = 'Dollar'.obs;
 
   var loggedInUser = UserModel().obs;
-  final authController = Get.put(AuthController());
+
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController streetController = TextEditingController();
@@ -23,11 +22,12 @@ class UserController extends GetxController {
 
   TextEditingController phoneController = TextEditingController();
 
-  Future<bool> validateCurrentPassword(String password) async {
-    return await authController.validatePassword(password);
-  }
+  // Future<bool> validateCurrentPassword(String password) async {
+  //   return await authController.validatePassword(password);
+  // }
 
-  void updateUserPassword(String password) {
-    authController.updatePassword(password);
-  }
+  // void updateUserPassword(String password) {
+  //   authController.updatePassword(password);
+  // }
+
 }

@@ -4,11 +4,11 @@ import 'package:blockchain_app/controller/user_controller.dart';
 import 'package:blockchain_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class AuthController extends GetxController {
   final userController = Get.put(UserController());
@@ -76,6 +76,18 @@ class AuthController extends GetxController {
           return '';
         }
       });
+
+      // Future.delayed(const Duration(milliseconds: 1000), () async{
+      //   bool isNew = await Database().isNewUser(_auth.currentUser);
+      //   UserModel _user = UserModel(id: _auth.currentUser!.uid, name: _auth.currentUser!.displayName, email: _auth.currentUser!.email, imageUrl: _auth.currentUser!.photoURL, createdAt: Timestamp.now(), bio: "Your Bio");
+      //   if(isNew){
+      //     if(await Database().createUserInDatabase(_user)){
+      //       Get.put(UserController()).currentUser.value = _user;
+      //     }else{
+      //       Get.put(UserController()).currentUser.value = _user;
+      //     }
+      //   }
+      // });
     } catch (e) {
       Get.snackbar("Error login Account", e.toString(),
           snackPosition: SnackPosition.BOTTOM);
