@@ -4,6 +4,8 @@ import 'package:blockchain_app/controller/user_controller.dart';
 import 'package:blockchain_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +18,7 @@ class AuthController extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final googleSignIn = GoogleSignIn();
+  final facebookLogin = FacebookLogin();
   final currentUser = FirebaseAuth.instance.currentUser.obs;
 
   @override
@@ -29,7 +32,8 @@ class AuthController extends GetxController {
       UserCredential authResult = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);
 
-      createUserInDatabase(authResult.user!.uid, authResult.user!.email!).then((value) => debugPrint(value.statusCode.toString()));
+      createUserInDatabase(authResult.user!.uid, authResult.user!.email!)
+          .then((value) => debugPrint(value.statusCode.toString()));
 
       return authResult.user!.uid;
     } catch (e) {
@@ -57,14 +61,15 @@ class AuthController extends GetxController {
         idToken: googleAuth.idToken,
       );
       _auth.signInWithCredential(credential).then((value) {
-        if ('' == value.user!.uid || value.user!.uid == null) {
+        if ('' == value.user!.uid) {
           return "Error Authenticating";
         } else {
           // CHECK IF USER EXISTS
           // IF ! EXiSTS CREATE A USER IN DATABASE
-          getUser(value.user!.uid).then((res){
-            if(res.statusCode == 404){
-              createUserInDatabase(value.user!.uid, value.user!.email!).then((value) => debugPrint(value.statusCode.toString()));
+          getUser(value.user!.uid).then((res) {
+            if (res.statusCode == 404) {
+              createUserInDatabase(value.user!.uid, value.user!.email!)
+                  .then((value) => debugPrint(value.statusCode.toString()));
             }
           });
 
@@ -118,8 +123,6 @@ class AuthController extends GetxController {
     updatePassword(password);
   }
 
-
-
   // HTTP REQUESTS TO HOSTINGER SERVER
 
   Future<http.Response> createUserInDatabase(String uid, String email) async {
@@ -140,7 +143,14 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<http.Response> addPersonalInfo(String firstName, String lastName, String streetAddress, String city, String zip, String citizenship, String uid) async {
+  Future<http.Response> addPersonalInfo(
+      String firstName,
+      String lastName,
+      String streetAddress,
+      String city,
+      String zip,
+      String citizenship,
+      String uid) async {
     var url = Uri.parse(BASE_URL + 'auth/personal-info/$uid');
     try {
       http.Response response = await http.post(url,
@@ -149,11 +159,11 @@ class AuthController extends GetxController {
           },
           body: jsonEncode({
             "firstName": firstName,
-            "lastName" : lastName,
-            "streetAddress" : streetAddress,
-            "city" : city,
-            "zip" : zip,
-            "citizenship" : citizenship
+            "lastName": lastName,
+            "streetAddress": streetAddress,
+            "city": city,
+            "zip": zip,
+            "citizenship": citizenship
           }));
       return response;
     } catch (e) {
@@ -166,8 +176,9 @@ class AuthController extends GetxController {
     var url = Uri.parse(BASE_URL + 'auth/get-user/$uid');
     try {
       http.Response response = await http.get(url);
-      if(jsonDecode(response.body)['data'] != 'No data found'){
-        userController.loggedInUser.value = UserModel.fromJson(jsonDecode(response.body)['data']);
+      if (jsonDecode(response.body)['data'] != 'No data found') {
+        userController.loggedInUser.value =
+            UserModel.fromJson(jsonDecode(response.body)['data']);
       }
       return response;
     } catch (e) {
@@ -175,5 +186,4 @@ class AuthController extends GetxController {
       rethrow;
     }
   }
-
 }

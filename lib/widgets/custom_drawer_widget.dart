@@ -2,7 +2,6 @@ import 'package:blockchain_app/controller/auth_controller.dart';
 import 'package:blockchain_app/pages/account_page.dart';
 import 'package:blockchain_app/pages/balance_page.dart';
 import 'package:blockchain_app/pages/referal_page.dart';
-import 'package:blockchain_app/views/login_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

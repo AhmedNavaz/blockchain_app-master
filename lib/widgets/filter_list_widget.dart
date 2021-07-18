@@ -8,6 +8,7 @@ var filterCheckList = {
   "exchange": false,
 };
 
+// ignore: must_be_immutable
 class FilterListWidget extends StatefulWidget {
   StateSetter stateSetter;
   FilterListWidget({Key? key, required this.stateSetter}) : super(key: key);

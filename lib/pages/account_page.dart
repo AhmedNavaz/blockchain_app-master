@@ -1,5 +1,6 @@
 import 'package:blockchain_app/controller/user_controller.dart';
 import 'package:blockchain_app/pages/personal_information_page.dart';
+import 'package:blockchain_app/pages/phone_number_verification_page.dart';
 import 'package:blockchain_app/pages/security_page.dart';
 import 'package:blockchain_app/pages/verify_number_page.dart';
 import 'package:blockchain_app/widgets/account_tabs.dart';
@@ -60,7 +61,8 @@ class AccountPage extends StatelessWidget {
                           Container(
                             child: AccountTabs(
                               title: 'Phone Number Verification',
-                              onTapFunc: () => Get.to(() => VerifyNumberPage()),
+                              onTapFunc: () =>
+                                  Get.to(() => PhoneVerificationPage()),
                             ),
                           ),
                           Container(

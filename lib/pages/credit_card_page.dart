@@ -1,7 +1,5 @@
 import 'package:blockchain_app/controller/user_controller.dart';
-import 'package:blockchain_app/pages/otp_page.dart';
 import 'package:blockchain_app/widgets/custom_textfiled_widget.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

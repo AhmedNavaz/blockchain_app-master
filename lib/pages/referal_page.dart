@@ -1,4 +1,3 @@
-import 'package:blockchain_app/widgets/custom_textfiled_widget.dart';
 import 'package:flutter/material.dart';
 
 class ReferPage extends StatelessWidget {

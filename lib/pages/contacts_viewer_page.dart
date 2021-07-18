@@ -1,3 +1,4 @@
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:blockchain_app/pages/add_message_page.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,8 +79,10 @@ class _ContactsViewerPageState extends State<ContactsViewerPage> {
         var phone = contact.phones!.firstWhere((phn) {
           String phnFlattened = flattenPhoneNumber(phn.value!);
           return phnFlattened.contains(searchTermFlatten);
+          // ignore: null_check_always_fails
         }, orElse: () => null!);
 
+        // ignore: unnecessary_null_comparison
         return phone != null;
       });
     }
